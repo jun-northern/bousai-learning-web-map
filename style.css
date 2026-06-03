@@ -1,0 +1,278 @@
+:root {
+  --bg: #f4f7f9;
+  --panel: #ffffff;
+  --text: #17212b;
+  --muted: #5d6b78;
+  --line: #d9e1e8;
+  --accent: #0f6aa6;
+  --danger: #b3261e;
+  --shadow: 0 10px 30px rgba(18, 38, 63, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.app-header {
+  align-items: center;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  padding: 14px 20px;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 0 0 3px;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.header-note {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 520px;
+}
+
+.app-main {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.notice,
+.source-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  line-height: 1.65;
+  padding: 12px 14px;
+}
+
+.notice {
+  border-left: 5px solid #e29d20;
+  font-weight: 650;
+}
+
+.source-panel h2 {
+  font-size: 1rem;
+  margin: 0 0 6px;
+}
+
+.source-panel p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 3px 0;
+}
+
+.map-shell {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  min-height: 520px;
+  overflow: hidden;
+  position: relative;
+}
+
+#map {
+  height: min(72vh, 780px);
+  min-height: 520px;
+  width: 100%;
+}
+
+.loading-panel,
+.error-panel {
+  left: 50%;
+  max-width: min(92vw, 480px);
+  position: absolute;
+  top: 18px;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+.loading-panel {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.loading-panel p {
+  color: var(--muted);
+  margin: 3px 0 0;
+}
+
+.loading-panel.is-hidden {
+  display: none;
+}
+
+.spinner {
+  animation: spin 0.9s linear infinite;
+  border: 4px solid #c7d9e8;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  height: 34px;
+  flex: 0 0 auto;
+  width: 34px;
+}
+
+.error-panel {
+  background: #fff8f7;
+  border: 1px solid #f0b8b3;
+  border-left: 5px solid var(--danger);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  color: #5b1915;
+  line-height: 1.55;
+  padding: 12px 14px;
+}
+
+.legend {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  color: var(--text);
+  line-height: 1.35;
+  padding: 10px 12px;
+}
+
+.legend h2 {
+  font-size: 0.95rem;
+  margin: 0 0 8px;
+}
+
+.legend-row {
+  align-items: center;
+  display: flex;
+  gap: 7px;
+  margin: 5px 0;
+  white-space: nowrap;
+}
+
+.legend-swatch {
+  border: 1px solid rgba(20, 76, 110, 0.45);
+  display: inline-block;
+  height: 14px;
+  width: 22px;
+}
+
+.site-icon {
+  align-items: center;
+  background: #d3322b;
+  border: 2px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.28);
+  display: flex;
+  height: 24px;
+  justify-content: center;
+  transform: rotate(-45deg);
+  width: 24px;
+}
+
+.site-icon::after {
+  background: #ffffff;
+  border-radius: 50%;
+  content: "";
+  height: 7px;
+  width: 7px;
+}
+
+.popup-title {
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.popup-table {
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.popup-table th {
+  color: var(--muted);
+  font-weight: 700;
+  padding: 3px 8px 3px 0;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.popup-table td {
+  padding: 3px 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 720px) {
+  .app-header {
+    align-items: flex-start;
+    display: grid;
+    padding: 12px;
+  }
+
+  .header-note,
+  .notice,
+  .source-panel p {
+    font-size: 0.86rem;
+  }
+
+  .app-main {
+    padding: 8px;
+  }
+
+  .map-shell,
+  #map {
+    min-height: 62vh;
+  }
+
+  #map {
+    height: 68vh;
+  }
+
+  .leaflet-control-layers,
+  .legend {
+    font-size: 0.86rem;
+  }
+
+  .legend {
+    max-width: 210px;
+  }
+
+  .loading-panel {
+    align-items: flex-start;
+    width: calc(100% - 24px);
+  }
+}
