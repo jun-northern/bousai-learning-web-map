@@ -7,6 +7,11 @@
     evacuation: "data/evacuation_sites_tsunami.geojson"
   };
 
+  const INITIAL_VIEW_BOUNDS = L.latLngBounds(
+    [42.55, 142.95],
+    [44.15, 146.35]
+  );
+
   const INUNDATION_COLORS = new Map([
     ["～0.3m未満", "#d8f0fb"],
     ["0.3m以上 ～ 0.5m未満", "#b7def3"],
@@ -24,7 +29,9 @@
   const map = L.map("map", {
     preferCanvas: true,
     zoomControl: true
-  }).setView([43.2, 143.9], 7);
+  });
+
+  map.fitBounds(INITIAL_VIEW_BOUNDS, { padding: [12, 12] });
 
   L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png", {
     attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>',
@@ -65,13 +72,13 @@
 
   const siteIcon = L.divIcon({
     className: "",
-    html: '<span class="site-icon" aria-hidden="true"></span>',
-    iconAnchor: [12, 24],
-    iconSize: [24, 24],
-    popupAnchor: [0, -22]
+    html: '<span class="site-icon site-icon--marker" aria-hidden="true"></span>',
+    iconAnchor: [7, 7],
+    iconSize: [14, 14],
+    popupAnchor: [0, -8]
   });
 
-  const evacuationLayer = L.geoJSON(null, {
+  const evacuationSitesLayer = L.geoJSON(null, {
     pointToLayer(feature, latlng) {
       return L.marker(latlng, { icon: siteIcon });
     },
@@ -87,10 +94,17 @@
     }
   });
 
+  const evacuationClusterLayer = L.markerClusterGroup({
+    disableClusteringAtZoom: 17,
+    maxClusterRadius: 90,
+    showCoverageOnHover: false,
+    spiderfyOnMaxZoom: true
+  });
+
   const overlays = {
     "市町村": municipalityLayer,
     "津波浸水域": inundationLayer,
-    "津波対応の指定緊急避難場所": evacuationLayer
+    "津波対応の指定緊急避難場所": evacuationClusterLayer
   };
 
   L.control.layers({}, overlays, { collapsed: false }).addTo(map);
@@ -112,7 +126,7 @@
 
     const results = await Promise.allSettled([
       loadLayer(DATASETS.municipality, municipalityLayer, true),
-      loadLayer(DATASETS.evacuation, evacuationLayer, true)
+      loadEvacuationLayer()
     ]);
 
     const failed = results.filter((result) => result.status === "rejected");
@@ -121,7 +135,7 @@
       failed.forEach((result) => console.error(result.reason));
     }
 
-    fitToAvailableBounds([municipalityLayer, evacuationLayer]);
+    map.fitBounds(INITIAL_VIEW_BOUNDS, { padding: [12, 12] });
     hideLoading();
   }
 
@@ -132,9 +146,6 @@
     inundationLoadPromise = loadLayer(DATASETS.inundation, inundationLayer, false)
       .then(() => {
         inundationLoaded = true;
-        if (map.hasLayer(inundationLayer)) {
-          fitToAvailableBounds([municipalityLayer, evacuationLayer, inundationLayer]);
-        }
       })
       .catch((error) => {
         console.error(error);
@@ -157,6 +168,13 @@
     }
   }
 
+  async function loadEvacuationLayer() {
+    const geojson = await fetchGeoJson(DATASETS.evacuation);
+    evacuationSitesLayer.addData(geojson);
+    evacuationClusterLayer.addLayer(evacuationSitesLayer);
+    evacuationClusterLayer.addTo(map);
+  }
+
   async function fetchGeoJson(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -167,20 +185,6 @@
     } catch (error) {
       throw new Error(`${url} のJSON解析に失敗しました。ファイルの文字コードや形式を確認してください。`);
     }
-  }
-
-  function fitToAvailableBounds(layers) {
-    const bounds = layers
-      .filter((layer) => layer.getLayers().length > 0)
-      .map((layer) => layer.getBounds())
-      .filter((boundsItem) => boundsItem.isValid());
-
-    if (!bounds.length) {
-      return;
-    }
-
-    const merged = bounds.reduce((acc, boundsItem) => acc.extend(boundsItem), bounds[0]);
-    map.fitBounds(merged, { padding: [24, 24], maxZoom: 12 });
   }
 
   function showLoading(message) {

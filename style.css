@@ -190,12 +190,11 @@ h1 {
   align-items: center;
   background: #d3322b;
   border: 2px solid #ffffff;
-  border-radius: 50% 50% 50% 0;
+  border-radius: 50%;
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.28);
   display: flex;
   height: 24px;
   justify-content: center;
-  transform: rotate(-45deg);
   width: 24px;
 }
 
@@ -205,6 +204,19 @@ h1 {
   content: "";
   height: 7px;
   width: 7px;
+}
+
+.site-icon--marker {
+  background: #c9362f;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 4px rgba(18, 38, 63, 0.24);
+  height: 14px;
+  width: 14px;
+}
+
+.site-icon--marker::after {
+  height: 4px;
+  width: 4px;
 }
 
 .popup-title {
