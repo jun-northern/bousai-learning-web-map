@@ -12,19 +12,20 @@
     [44.15, 146.35]
   );
 
-  const INUNDATION_COLORS = new Map([
-    ["～0.3m未満", "#d8f0fb"],
-    ["0.3m以上 ～ 0.5m未満", "#b7def3"],
-    ["0.5m以上 ～ 1m未満", "#8fc7e8"],
-    ["1m以上 ～ 3m未満", "#5aa6d6"],
-    ["3m以上 ～ 5m未満", "#2f85c4"],
-    ["5m以上 ～ 10m未満", "#1765ad"],
-    ["10m以上 ～ 20m未満", "#0b3f82"]
+  const INUNDATION_STYLES = new Map([
+    ["～0.3m未満", { color: "#d8f0fb", label: "0.3m未満" }],
+    ["0.3m以上 ～ 0.5m未満", { color: "#b7def3", label: "0.3m以上 0.5m未満" }],
+    ["0.5m以上 ～ 1m未満", { color: "#8fc7e8", label: "0.5m以上 1m未満" }],
+    ["1m以上 ～ 3m未満", { color: "#5aa6d6", label: "1m以上 3m未満" }],
+    ["3m以上 ～ 5m未満", { color: "#2f85c4", label: "3m以上 5m未満" }],
+    ["5m以上 ～ 10m未満", { color: "#1765ad", label: "5m以上 10m未満" }],
+    ["10m以上 ～ 20m未満", { color: "#0b3f82", label: "10m以上 20m未満" }]
   ]);
 
   const loading = document.getElementById("loading");
   const loadingText = document.getElementById("loadingText");
   const errorPanel = document.getElementById("errorPanel");
+  const compactPortraitQuery = window.matchMedia("(max-width: 720px) and (orientation: portrait)");
 
   const map = L.map("map", {
     preferCanvas: true,
@@ -60,9 +61,11 @@
   const inundationLayer = L.geoJSON(null, {
     style(feature) {
       const rank = feature.properties && feature.properties.A40_003;
+      const style = INUNDATION_STYLES.get(rank);
+      const color = style ? style.color : "#6aaed6";
       return {
-        color: INUNDATION_COLORS.get(rank) || "#6aaed6",
-        fillColor: INUNDATION_COLORS.get(rank) || "#6aaed6",
+        color,
+        fillColor: color,
         fillOpacity: 0.48,
         opacity: 0.65,
         weight: 0.6
@@ -107,7 +110,7 @@
     "津波浸水域（初期OFF）": inundationLayer
   };
 
-  L.control.layers({}, overlays, { collapsed: false }).addTo(map);
+  L.control.layers({}, overlays, { collapsed: compactPortraitQuery.matches }).addTo(map);
   addLegend();
   loadInitialLayers();
 
@@ -140,7 +143,7 @@
   }
 
   async function loadInundationLayer() {
-    showLoading("津波浸水域を読み込み中です");
+    showLoading("津波浸水域を読み込み中です...");
     clearError();
 
     inundationLoadPromise = loadLayer(DATASETS.inundation, inundationLayer, false)
@@ -211,17 +214,29 @@
     legend.onAdd = function () {
       const div = L.DomUtil.create("div", "legend");
       div.innerHTML = [
+        '<button class="legend-toggle" type="button" aria-expanded="false">凡例を開く</button>',
+        '<div class="legend-content">',
         "<h2>凡例</h2>",
         '<p class="legend-note">津波浸水域はレイヤーをONにしたときだけ表示します。</p>',
         '<div class="legend-row"><span class="legend-cluster" aria-hidden="true">10</span><span class="legend-label">避難場所クラスタ（数字はまとまった件数）</span></div>',
         '<div class="legend-row"><span class="site-icon" aria-hidden="true"></span><span class="legend-label">個別の津波対応避難場所</span></div>',
         '<div class="legend-row"><span class="legend-swatch" style="background:#8fc7e8"></span><span class="legend-label">津波浸水域の色分け</span></div>',
-        ...Array.from(INUNDATION_COLORS.entries()).map(([label, color]) => (
+        ...Array.from(INUNDATION_STYLES.values()).map(({ color, label }) => (
           `<div class="legend-row"><span class="legend-swatch" style="background:${color}"></span><span class="legend-label">${escapeHtml(label)}</span></div>`
-        ))
+        )),
+        "</div>"
       ].join("");
+
       L.DomEvent.disableClickPropagation(div);
       L.DomEvent.disableScrollPropagation(div);
+
+      const toggle = div.querySelector(".legend-toggle");
+      toggle.addEventListener("click", () => {
+        const isOpen = div.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", String(isOpen));
+        toggle.textContent = isOpen ? "凡例を閉じる" : "凡例を開く";
+      });
+
       return div;
     };
     legend.addTo(map);

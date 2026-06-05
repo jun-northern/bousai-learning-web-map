@@ -16,15 +16,26 @@
       <p class="eyebrow">Local preview</p>
       <h1>防災学習Webマップ</h1>
     </div>
-    <p class="header-note">市町村・津波浸水想定・津波対応の指定緊急避難場所を重ねて確認できます。</p>
+    <p class="header-note">市町村、津波浸水想定、津波対応の指定緊急避難場所を重ねて確認できます。</p>
   </header>
 
   <main class="app-main">
     <section class="notice" aria-label="注意書き">
-      <p class="notice-primary">このWebマップは防災学習を目的とした参考資料です。災害時は、気象庁・自治体・国土地理院などの公式情報を必ず確認してください。</p>
-      <details class="notice-details">
-        <summary>補足と共有範囲</summary>
+      <p class="notice-primary">このWebマップは防災学習用です。災害時は気象庁・自治体・国土地理院などの公式情報を必ず確認してください。</p>
+      <details class="notice-details mobile-collapsible">
+        <summary>使い方・注意を見る</summary>
         <p>避難場所・避難所の最新情報は自治体の公式情報を確認してください。このサイトはURLを知っている関係者向けの共有を想定していますが、完全な非公開・アクセス制限ではありません。</p>
+      </details>
+    </section>
+
+    <section class="guidance-panels" aria-label="地図の説明">
+      <details class="guidance-card mobile-collapsible">
+        <summary>津波浸水域の説明を見る</summary>
+        <p>津波浸水域は初期状態ではOFFです。地図右上のレイヤー切替からONにすると、必要になったときだけ読み込みます。</p>
+      </details>
+      <details class="guidance-card mobile-collapsible">
+        <summary>避難場所の説明を見る</summary>
+        <p>赤い点は津波に対応した指定緊急避難場所です。数字のマーカーは複数の場所をまとめたクラスタ表示で、タップすると展開できます。</p>
       </details>
     </section>
 
@@ -42,7 +53,7 @@
 
     <section class="source-panel" aria-label="出典">
       <details>
-        <summary>出典</summary>
+        <summary>注意書き・出典を見る</summary>
         <p>背景地図: 国土地理院 淡色地図タイル</p>
         <p>主題図: このフォルダ内のGeoJSONデータ（市町村、津波浸水域、津波対応の指定緊急避難場所）</p>
       </details>
