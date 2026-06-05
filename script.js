@@ -103,8 +103,8 @@
 
   const overlays = {
     "市町村": municipalityLayer,
-    "津波浸水域": inundationLayer,
-    "津波対応の指定緊急避難場所": evacuationClusterLayer
+    "避難場所（クラスタ表示）": evacuationClusterLayer,
+    "津波浸水域（初期OFF）": inundationLayer
   };
 
   L.control.layers({}, overlays, { collapsed: false }).addTo(map);
@@ -211,12 +211,17 @@
     legend.onAdd = function () {
       const div = L.DomUtil.create("div", "legend");
       div.innerHTML = [
-        "<h2>津波浸水深</h2>",
+        "<h2>凡例</h2>",
+        '<p class="legend-note">津波浸水域はレイヤーをONにしたときだけ表示します。</p>',
+        '<div class="legend-row"><span class="legend-cluster" aria-hidden="true">10</span><span class="legend-label">避難場所クラスタ（数字はまとまった件数）</span></div>',
+        '<div class="legend-row"><span class="site-icon" aria-hidden="true"></span><span class="legend-label">個別の津波対応避難場所</span></div>',
+        '<div class="legend-row"><span class="legend-swatch" style="background:#8fc7e8"></span><span class="legend-label">津波浸水域の色分け</span></div>',
         ...Array.from(INUNDATION_COLORS.entries()).map(([label, color]) => (
-          `<div class="legend-row"><span class="legend-swatch" style="background:${color}"></span><span>${escapeHtml(label)}</span></div>`
-        )),
-        '<div class="legend-row"><span class="site-icon" aria-hidden="true"></span><span>避難場所</span></div>'
+          `<div class="legend-row"><span class="legend-swatch" style="background:${color}"></span><span class="legend-label">${escapeHtml(label)}</span></div>`
+        ))
       ].join("");
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.disableScrollPropagation(div);
       return div;
     };
     legend.addTo(map);

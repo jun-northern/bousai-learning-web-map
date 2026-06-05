@@ -21,8 +21,11 @@
 
   <main class="app-main">
     <section class="notice" aria-label="注意書き">
-      このWebマップは防災学習を目的とした参考資料です。災害時は、気象庁・自治体・国土地理院などの公式情報を必ず確認してください。避難場所・避難所の最新情報は自治体の公式情報を確認してください。
-      このサイトはURLを知っている関係者向けの共有を想定していますが、完全な非公開・アクセス制限ではありません。
+      <p class="notice-primary">このWebマップは防災学習を目的とした参考資料です。災害時は、気象庁・自治体・国土地理院などの公式情報を必ず確認してください。</p>
+      <details class="notice-details">
+        <summary>補足と共有範囲</summary>
+        <p>避難場所・避難所の最新情報は自治体の公式情報を確認してください。このサイトはURLを知っている関係者向けの共有を想定していますが、完全な非公開・アクセス制限ではありません。</p>
+      </details>
     </section>
 
     <section class="map-shell">
@@ -38,9 +41,11 @@
     </section>
 
     <section class="source-panel" aria-label="出典">
-      <h2>出典</h2>
-      <p>背景地図: 国土地理院 淡色地図タイル</p>
-      <p>主題図: このフォルダ内のGeoJSONデータ（市町村、津波浸水域、津波対応の指定緊急避難場所）</p>
+      <details>
+        <summary>出典</summary>
+        <p>背景地図: 国土地理院 淡色地図タイル</p>
+        <p>主題図: このフォルダ内のGeoJSONデータ（市町村、津波浸水域、津波対応の指定緊急避難場所）</p>
+      </details>
     </section>
   </main>
 
