@@ -6,7 +6,8 @@
 
 ```text
 data/municipality.geojson
-data/tsunami_inundation_light.geojson
+data/tsunami_inundation_light_v2.geojson
+data/tsunami_inundation_light.geojson (旧軽量版。削除せず保持)
 data/evacuation_sites_tsunami.geojson
 ```
 
@@ -18,7 +19,7 @@ data/evacuation_sites_tsunami.geojson
 - 避難場所は Leaflet.markercluster でクラスタ表示し、縮小時や地区拡大時にアイコンが密集しすぎないように表示
 - 避難場所の個別表示は小さい円形マーカーにして、地図上で控えめに表示
 - 津波浸水域レイヤーは初期OFF
-- 津波浸水域レイヤーをONにしたときだけ `data/tsunami_inundation_light.geojson` を読み込み
+- 津波浸水域レイヤーをONにしたときだけ `data/tsunami_inundation_light_v2.geojson` を読み込み
 - 津波浸水域を `A40_003` の値で青系に色分けして表示
 - レイヤー切替、凡例、出典表示、注意書きを表示
 - 市町村と避難場所のクリック時にポップアップを表示

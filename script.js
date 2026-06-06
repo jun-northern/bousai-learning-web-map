@@ -3,7 +3,7 @@
 
   const DATASETS = {
     municipality: "data/municipality.geojson",
-    inundation: "data/tsunami_inundation_light.geojson",
+    inundation: "data/tsunami_inundation_light_v2.geojson",
     evacuation: "data/evacuation_sites_tsunami.geojson"
   };
 
@@ -59,6 +59,7 @@
   });
 
   const inundationLayer = L.geoJSON(null, {
+    interactive: false,
     style(feature) {
       const rank = feature.properties && feature.properties.A40_003;
       const style = INUNDATION_STYLES.get(rank);
