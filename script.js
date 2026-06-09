@@ -3,7 +3,8 @@
 
   const DATASETS = {
     municipality: "data/municipality.geojson",
-    inundation: "data/tsunami_inundation_light_v2.geojson",
+    tsunamiKushiro: "data/tsunami_kushiro.geojson",
+    tsunamiNemuro: "data/tsunami_nemuro.geojson",
     evacuation: "data/evacuation_sites_tsunami.geojson"
   };
 
@@ -58,21 +59,8 @@
     }
   });
 
-  const inundationLayer = L.geoJSON(null, {
-    interactive: false,
-    style(feature) {
-      const rank = feature.properties && feature.properties.A40_003;
-      const style = INUNDATION_STYLES.get(rank);
-      const color = style ? style.color : "#6aaed6";
-      return {
-        color,
-        fillColor: color,
-        fillOpacity: 0.48,
-        opacity: 0.65,
-        weight: 0.6
-      };
-    }
-  });
+  const tsunamiKushiroLayer = createInundationLayer();
+  const tsunamiNemuroLayer = createInundationLayer();
 
   const siteIcon = L.divIcon({
     className: "",
@@ -108,21 +96,37 @@
   const overlays = {
     "市町村": municipalityLayer,
     "避難場所（クラスタ表示）": evacuationClusterLayer,
-    "津波浸水域（初期OFF）": inundationLayer
+    "釧路地域津波浸水域": tsunamiKushiroLayer,
+    "根室地域津波浸水域": tsunamiNemuroLayer
   };
 
   L.control.layers({}, overlays, { collapsed: compactPortraitQuery.matches }).addTo(map);
   addLegend();
   loadInitialLayers();
 
-  let inundationLoadPromise = null;
-  let inundationLoaded = false;
+  const tsunamiLayerConfigs = [
+    {
+      label: "釧路地域津波浸水域",
+      url: DATASETS.tsunamiKushiro,
+      layer: tsunamiKushiroLayer,
+      loadPromise: null,
+      loaded: false
+    },
+    {
+      label: "根室地域津波浸水域",
+      url: DATASETS.tsunamiNemuro,
+      layer: tsunamiNemuroLayer,
+      loadPromise: null,
+      loaded: false
+    }
+  ];
 
   map.on("overlayadd", (event) => {
-    if (event.layer !== inundationLayer || inundationLoaded || inundationLoadPromise) {
+    const config = tsunamiLayerConfigs.find((item) => item.layer === event.layer);
+    if (!config || config.loaded || config.loadPromise) {
       return;
     }
-    loadInundationLayer();
+    loadInundationLayer(config);
   });
 
   async function loadInitialLayers() {
@@ -143,25 +147,43 @@
     hideLoading();
   }
 
-  async function loadInundationLayer() {
-    showLoading("津波浸水域を読み込み中です...");
+  async function loadInundationLayer(config) {
+    showLoading(`${config.label}を読み込み中です...`);
     clearError();
 
-    inundationLoadPromise = loadLayer(DATASETS.inundation, inundationLayer, false)
+    config.loadPromise = loadLayer(config.url, config.layer, false)
       .then(() => {
-        inundationLoaded = true;
+        config.loaded = true;
       })
       .catch((error) => {
         console.error(error);
-        map.removeLayer(inundationLayer);
-        showError("津波浸水域の読み込みに失敗しました。時間をおいて再読み込みしてください。");
+        map.removeLayer(config.layer);
+        showError(`${config.label}の読み込みに失敗しました。時間をおいて再読み込みしてください。`);
       })
       .finally(() => {
-        inundationLoadPromise = null;
+        config.loadPromise = null;
         hideLoading();
       });
 
-    return inundationLoadPromise;
+    return config.loadPromise;
+  }
+
+  function createInundationLayer() {
+    return L.geoJSON(null, {
+      interactive: false,
+      style(feature) {
+        const rank = feature.properties && feature.properties.A40_003;
+        const style = INUNDATION_STYLES.get(rank);
+        const color = style ? style.color : "#6aaed6";
+        return {
+          color,
+          fillColor: color,
+          fillOpacity: 0.48,
+          opacity: 0.65,
+          weight: 0.6
+        };
+      }
+    });
   }
 
   async function loadLayer(url, layer, addToMap) {
