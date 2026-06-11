@@ -5,7 +5,8 @@
     municipality: "data/municipality.geojson",
     tsunamiKushiro: "data/tsunami_kushiro.geojson",
     tsunamiNemuro: "data/tsunami_nemuro.geojson",
-    evacuation: "data/evacuation_sites_tsunami.geojson"
+    evacuation: "data/evacuation_sites_tsunami.geojson",
+    municipalityScenario: "data/disaster_scenario_municipality.csv"
   };
 
   const INITIAL_VIEW_BOUNDS = L.latLngBounds(
@@ -27,6 +28,7 @@
   const loadingText = document.getElementById("loadingText");
   const errorPanel = document.getElementById("errorPanel");
   const compactPortraitQuery = window.matchMedia("(max-width: 720px) and (orientation: portrait)");
+  const municipalityScenarios = new Map();
 
   const map = L.map("map", {
     preferCanvas: true,
@@ -50,12 +52,10 @@
     },
     onEachFeature(feature, layer) {
       const p = feature.properties || {};
-      layer.bindPopup(createPopup("市町村", [
-        ["市町村名", p.N03_004 || p.join_key || "不明"],
-        ["都道府県", p.N03_001 || p.pref_name || ""],
-        ["振興局等", p.N03_002 || ""],
-        ["行政区域コード", p.N03_007 || ""]
-      ]));
+      const municipalityName = getMunicipalityName(p);
+      const scenario = getMunicipalityScenario(municipalityName);
+      const scenarioRows = createScenarioRows(scenario);
+      layer.bindPopup(createMunicipalityPopup(p, municipalityName, scenarioRows));
     }
   });
 
@@ -133,7 +133,7 @@
     showLoading("市町村と避難場所を読み込んでいます...");
 
     const results = await Promise.allSettled([
-      loadLayer(DATASETS.municipality, municipalityLayer, true),
+      loadMunicipalityLayer(),
       loadEvacuationLayer()
     ]);
 
@@ -194,6 +194,16 @@
     }
   }
 
+  async function loadMunicipalityLayer() {
+    try {
+      await loadMunicipalityScenarios();
+    } catch (error) {
+      console.warn("Municipality scenario CSV could not be loaded.", error);
+    }
+
+    return loadLayer(DATASETS.municipality, municipalityLayer, true);
+  }
+
   async function loadEvacuationLayer() {
     const geojson = await fetchGeoJson(DATASETS.evacuation);
     evacuationSitesLayer.addData(geojson);
@@ -211,6 +221,141 @@
     } catch (error) {
       throw new Error(`${url} のJSON解析に失敗しました。ファイルの文字コードや形式を確認してください。`);
     }
+  }
+
+  async function loadMunicipalityScenarios() {
+    const response = await fetch(DATASETS.municipalityScenario);
+    if (!response.ok) {
+      throw new Error(`${DATASETS.municipalityScenario} could not be loaded: HTTP ${response.status}`);
+    }
+
+    const rows = parseCsv(await response.text());
+    rows.forEach((row) => {
+      const areaName = row.area_name;
+      if (!areaName) {
+        return;
+      }
+      addMunicipalityScenarioKey(areaName, row);
+      addMunicipalityScenarioKey(createShiftJisMojibake(areaName), row);
+    });
+  }
+
+  function addMunicipalityScenarioKey(key, row) {
+    const normalized = normalizeKey(key);
+    if (normalized) {
+      municipalityScenarios.set(normalized, row);
+    }
+  }
+
+  function parseCsv(text) {
+    const records = [];
+    let field = "";
+    let record = [];
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i += 1) {
+      const char = text[i];
+      const next = text[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && next === '"') {
+          field += '"';
+          i += 1;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === "," && !inQuotes) {
+        record.push(field);
+        field = "";
+      } else if ((char === "\n" || char === "\r") && !inQuotes) {
+        if (char === "\r" && next === "\n") {
+          i += 1;
+        }
+        record.push(field);
+        records.push(record);
+        field = "";
+        record = [];
+      } else {
+        field += char;
+      }
+    }
+
+    if (field !== "" || record.length > 0) {
+      record.push(field);
+      records.push(record);
+    }
+
+    const headers = records.shift();
+    if (!headers) {
+      return [];
+    }
+
+    return records
+      .filter((items) => items.some((item) => item.trim() !== ""))
+      .map((items) => headers.reduce((row, header, index) => {
+        row[header.trim()] = (items[index] || "").trim();
+        return row;
+      }, {}));
+  }
+
+  function createShiftJisMojibake(value) {
+    if (!window.TextEncoder || !window.TextDecoder) {
+      return "";
+    }
+
+    try {
+      return new TextDecoder("shift_jis").decode(new TextEncoder().encode(value));
+    } catch (error) {
+      console.warn("Could not create mojibake key for municipality scenario.", error);
+      return "";
+    }
+  }
+
+  function normalizeKey(value) {
+    return String(value || "").trim().replace(/\s+/g, "");
+  }
+
+  function getMunicipalityName(properties) {
+    const candidates = [
+      properties.area_name,
+      properties.N03_004,
+      properties.join_key,
+      properties.municipality,
+      properties.municipality_name,
+      properties.city_name,
+      properties.name,
+      properties.NAME
+    ];
+
+    return candidates.find((value) => String(value || "").trim() !== "") || "";
+  }
+
+  function getMunicipalityScenario(municipalityName) {
+    return municipalityScenarios.get(normalizeKey(municipalityName));
+  }
+
+  function createMunicipalityPopup(properties, municipalityName, scenarioRows) {
+    return createPopup(municipalityName || "市町村", [
+      ["市町村名", municipalityName],
+      ["都道府県", properties.N03_001 || properties.pref_name || ""],
+      ["振興局等", properties.N03_002 || ""],
+      ["行政区域コード", properties.N03_007 || ""],
+      ...scenarioRows
+    ]);
+  }
+
+  function createScenarioRows(scenario) {
+    if (!scenario) {
+      return [];
+    }
+
+    return [
+      ["想定震度", scenario.expected_shindo],
+      ["津波到達目安", scenario.tsunami_arrival_note],
+      ["停電復旧目安", scenario.power_restore_est],
+      ["学習メモ", scenario.learning_memo],
+      ["出典", scenario.source_note]
+    ];
   }
 
   function showLoading(message) {
