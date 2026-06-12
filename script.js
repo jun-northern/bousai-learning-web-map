@@ -352,7 +352,7 @@
     return [
       ["想定震度", scenario.expected_shindo],
       ["津波到達目安", scenario.tsunami_arrival_note],
-      ["停電復旧目安", scenario.power_restore_est],
+      ["停電への備え目安", scenario.power_restore_est],
       ["学習メモ", scenario.learning_memo],
       ["出典", scenario.source_note]
     ];
