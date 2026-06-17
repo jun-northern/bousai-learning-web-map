@@ -441,6 +441,48 @@ summary {
   color: #ffffff;
 }
 
+.tsunami-arrival-display {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tsunami-arrival-badge {
+  align-items: center;
+  border: 1px solid rgba(23, 33, 43, 0.18);
+  border-radius: 6px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.82rem;
+  font-weight: 800;
+  justify-content: center;
+  line-height: 1.1;
+  min-height: 26px;
+  padding: 4px 7px;
+  text-align: center;
+}
+
+.tsunami-arrival-short {
+  background: #ffe2d2;
+  color: #8a2b11;
+}
+
+.tsunami-arrival-check-early {
+  background: #fff0bf;
+  color: #694a00;
+}
+
+.tsunami-arrival-check {
+  background: #e8eef4;
+  color: #263f52;
+}
+
+.tsunami-arrival-coastal {
+  background: #e3f1f8;
+  color: #0c527f;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -640,6 +682,25 @@ summary {
     min-width: 2.1em;
     text-align: center;
   }
+
+  .tsunami-arrival-display {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35em;
+  }
+
+  .tsunami-arrival-badge {
+    align-items: center;
+    display: inline-flex;
+    font-size: 0.8rem;
+    font-weight: 800;
+    justify-content: center;
+    line-height: 1.1;
+    min-height: 2em;
+    padding: 3px 6px;
+    text-align: center;
+  }
 }
 
 @media (max-width: 420px) {
@@ -703,6 +764,23 @@ summary {
     line-height: 1;
     min-width: 1.9em;
     padding: 0 4px;
+    text-align: center;
+  }
+
+  .tsunami-arrival-display {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3em;
+  }
+
+  .tsunami-arrival-badge {
+    align-items: center;
+    display: inline-flex;
+    font-size: 0.78rem;
+    justify-content: center;
+    min-height: 1.9em;
+    padding: 3px 5px;
     text-align: center;
   }
 }

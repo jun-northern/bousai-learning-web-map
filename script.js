@@ -351,7 +351,7 @@
 
     return [
       ["想定震度", createSeismicIntensityDisplay(scenario.expected_shindo)],
-      ["津波到達目安", scenario.tsunami_arrival_note],
+      ["津波到達目安", createTsunamiArrivalDisplay(scenario.tsunami_arrival_note)],
       ["停電への備え目安", scenario.power_restore_est],
       ["学習メモ", scenario.learning_memo],
       ["出典", scenario.source_note]
@@ -408,6 +408,60 @@
     }
 
     return null;
+  }
+
+  function createTsunamiArrivalDisplay(value) {
+    const text = String(value || "").trim();
+    if (!text) {
+      return "";
+    }
+
+    const arrival = getTsunamiArrivalMeta(text);
+    return {
+      html: [
+        `<span class="tsunami-arrival-display">`,
+        `<span class="tsunami-arrival-badge ${arrival.className}">${escapeHtml(arrival.label)}</span>`,
+        `<span>${escapeHtml(text)}</span>`,
+        `</span>`
+      ].join(""),
+      text
+    };
+  }
+
+  function getTsunamiArrivalMeta(value) {
+    const normalized = normalizeArrivalText(value);
+    const minutes = Array.from(normalized.matchAll(/(\d+(?:\.\d+)?)\s*分/g))
+      .map((match) => Number(match[1]))
+      .filter((minute) => Number.isFinite(minute));
+
+    if (minutes.length > 0) {
+      const shortest = Math.min(...minutes);
+      const longest = Math.max(...minutes);
+
+      if (shortest <= 20) {
+        return { label: "短め", className: "tsunami-arrival-short" };
+      }
+
+      if (longest <= 40) {
+        return { label: "早め確認", className: "tsunami-arrival-check-early" };
+      }
+
+      return { label: "要確認", className: "tsunami-arrival-check" };
+    }
+
+    if (/(沿岸|海岸|内陸|対象外|中心)/.test(normalized)) {
+      return { label: "沿岸部中心", className: "tsunami-arrival-coastal" };
+    }
+
+    return { label: "要確認", className: "tsunami-arrival-check" };
+  }
+
+  function normalizeArrivalText(value) {
+    return String(value || "")
+      .replace(/[０-９]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0xfee0))
+      .replace(/[〜～]/g, "-")
+      .replace(/[：約]/g, "")
+      .replace(/\s+/g, "");
   }
 
   function showLoading(message) {
