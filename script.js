@@ -44,11 +44,11 @@
 
   const municipalityLayer = L.geoJSON(null, {
     style: {
-      color: "#475766",
+      color: "#263f52",
       fillColor: "#ffffff",
-      fillOpacity: 0.06,
-      opacity: 0.8,
-      weight: 1
+      fillOpacity: 0.04,
+      opacity: 0.95,
+      weight: 1.4
     },
     onEachFeature(feature, layer) {
       const p = feature.properties || {};
@@ -65,9 +65,9 @@
   const siteIcon = L.divIcon({
     className: "",
     html: '<span class="site-icon site-icon--marker" aria-hidden="true"></span>',
-    iconAnchor: [7, 7],
-    iconSize: [14, 14],
-    popupAnchor: [0, -8]
+    iconAnchor: [9, 9],
+    iconSize: [18, 18],
+    popupAnchor: [0, -10]
   });
 
   const evacuationSitesLayer = L.geoJSON(null, {
@@ -178,9 +178,9 @@
         return {
           color,
           fillColor: color,
-          fillOpacity: 0.48,
-          opacity: 0.65,
-          weight: 0.6
+          fillOpacity: 0.38,
+          opacity: 0.55,
+          weight: 0.5
         };
       }
     });
@@ -385,13 +385,14 @@
         '<button class="legend-toggle" type="button" aria-expanded="false">凡例を開く</button>',
         '<div class="legend-content">',
         "<h2>凡例</h2>",
-        '<p class="legend-note">津波浸水域はレイヤーをONにしたときだけ表示します。</p>',
-        '<div class="legend-row"><span class="legend-cluster" aria-hidden="true">10</span><span class="legend-label">避難場所クラスタ（数字はまとまった件数）</span></div>',
-        '<div class="legend-row"><span class="site-icon" aria-hidden="true"></span><span class="legend-label">個別の津波対応避難場所</span></div>',
-        '<div class="legend-row"><span class="legend-swatch" style="background:#8fc7e8"></span><span class="legend-label">津波浸水域の色分け</span></div>',
+        '<p class="legend-note">防災学習用です。実際の避難判断は自治体などの最新情報を確認してください。</p>',
+        '<div class="legend-row"><span class="legend-boundary" aria-hidden="true"></span><span class="legend-label">市町村の境界</span></div>',
+        '<div class="legend-row"><span class="legend-swatch" style="background:#8fc7e8"></span><span class="legend-label">津波浸水域</span></div>',
         ...Array.from(INUNDATION_STYLES.values()).map(({ color, label }) => (
           `<div class="legend-row"><span class="legend-swatch" style="background:${color}"></span><span class="legend-label">${escapeHtml(label)}</span></div>`
         )),
+        '<div class="legend-row"><span class="site-icon" aria-hidden="true"></span><span class="legend-label">津波避難場所</span></div>',
+        '<div class="legend-row"><span class="legend-cluster" aria-hidden="true">10</span><span class="legend-label">避難場所クラスタ</span></div>',
         "</div>"
       ].join("");
 
