@@ -350,12 +350,64 @@
     }
 
     return [
-      ["想定震度", scenario.expected_shindo],
+      ["想定震度", createSeismicIntensityDisplay(scenario.expected_shindo)],
       ["津波到達目安", scenario.tsunami_arrival_note],
       ["停電への備え目安", scenario.power_restore_est],
       ["学習メモ", scenario.learning_memo],
       ["出典", scenario.source_note]
     ];
+  }
+
+  function createSeismicIntensityDisplay(value) {
+    const text = String(value || "").trim();
+    if (!text) {
+      return "";
+    }
+
+    const intensity = getSeismicIntensityMeta(text);
+    if (!intensity) {
+      return text;
+    }
+
+    return {
+      html: [
+        `<span class="seismic-value">`,
+        `<span class="seismic-badge ${intensity.className}" aria-label="${escapeHtml(text)}">${intensity.label}</span>`,
+        `<span>${escapeHtml(text)}</span>`,
+        `</span>`
+      ].join(""),
+      text
+    };
+  }
+
+  function getSeismicIntensityMeta(value) {
+    const normalized = String(value || "")
+      .replace(/[－ー−―]/g, "-")
+      .replace(/[＋]/g, "+")
+      .replace(/\s+/g, "")
+      .replace(/震度/g, "");
+
+    if (/7/.test(normalized)) {
+      return { label: "7", className: "intensity-7" };
+    }
+
+    if (/6(強|\+)/.test(normalized)) {
+      return { label: "6+", className: "intensity-6p" };
+    }
+
+    if (/6(弱|-)/.test(normalized)) {
+      return { label: "6&minus;", className: "intensity-6m" };
+    }
+
+    if (/5(強|\+)/.test(normalized)) {
+      return { label: "5+", className: "intensity-5p" };
+    }
+
+    if (/5(弱|-)/.test(normalized)) {
+      return { label: "5&minus;", className: "intensity-5m" };
+    }
+
+    return null;
   }
 
   function showLoading(message) {
@@ -413,14 +465,34 @@
 
   function createPopup(title, rows) {
     const body = rows
-      .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== "")
-      .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`)
+      .filter(([, value]) => hasPopupValue(value))
+      .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${formatPopupValue(value)}</td></tr>`)
       .join("");
 
     return [
       `<div class="popup-title">${escapeHtml(title)}</div>`,
       `<table class="popup-table">${body}</table>`
     ].join("");
+  }
+
+  function hasPopupValue(value) {
+    if (value === undefined || value === null) {
+      return false;
+    }
+
+    if (typeof value === "object" && value.html !== undefined) {
+      return String(value.text || value.html).trim() !== "";
+    }
+
+    return String(value).trim() !== "";
+  }
+
+  function formatPopupValue(value) {
+    if (value && typeof value === "object" && value.html !== undefined) {
+      return value.html;
+    }
+
+    return escapeHtml(value);
   }
 
   function escapeHtml(value) {

@@ -395,6 +395,52 @@ summary {
   vertical-align: top;
 }
 
+.seismic-value {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.seismic-badge {
+  align-items: center;
+  border: 1px solid rgba(23, 33, 43, 0.25);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  color: #111111;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.95rem;
+  font-weight: 900;
+  height: 28px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 28px;
+  padding: 0 5px;
+}
+
+.intensity-5m {
+  background: #f8df57;
+}
+
+.intensity-5p {
+  background: #f3b340;
+}
+
+.intensity-6m {
+  background: #e97832;
+}
+
+.intensity-6p {
+  background: #dc4633;
+  color: #ffffff;
+}
+
+.intensity-7 {
+  background: #7b2f83;
+  color: #ffffff;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -618,6 +664,17 @@ summary {
 
   .popup-table td {
     padding-left: 0;
+  }
+
+  .seismic-value {
+    gap: 5px;
+  }
+
+  .seismic-badge {
+    font-size: 0.88rem;
+    height: 26px;
+    min-width: 26px;
+    padding: 0 4px;
   }
 }
 
