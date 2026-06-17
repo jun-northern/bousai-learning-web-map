@@ -371,7 +371,7 @@
 
     return {
       html: [
-        `<span class="seismic-value">`,
+        `<span class="seismic-value seismic-display">`,
         `<span class="seismic-badge ${intensity.className}" aria-label="${escapeHtml(text)}">${intensity.label}</span>`,
         `<span>${escapeHtml(text)}</span>`,
         `</span>`

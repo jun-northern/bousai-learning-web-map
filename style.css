@@ -621,6 +621,25 @@ summary {
     height: 24px;
     width: 24px;
   }
+
+  .seismic-value,
+  .seismic-display {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35em;
+  }
+
+  .seismic-badge {
+    align-items: center;
+    display: inline-flex;
+    font-weight: 900;
+    height: 2.1em;
+    justify-content: center;
+    line-height: 1;
+    min-width: 2.1em;
+    text-align: center;
+  }
 }
 
 @media (max-width: 420px) {
@@ -666,15 +685,25 @@ summary {
     padding-left: 0;
   }
 
-  .seismic-value {
-    gap: 5px;
+  .seismic-value,
+  .seismic-display {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3em;
   }
 
   .seismic-badge {
+    align-items: center;
+    display: inline-flex;
     font-size: 0.88rem;
-    height: 26px;
-    min-width: 26px;
+    font-weight: 900;
+    height: 1.9em;
+    justify-content: center;
+    line-height: 1;
+    min-width: 1.9em;
     padding: 0 4px;
+    text-align: center;
   }
 }
 
