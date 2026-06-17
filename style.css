@@ -101,6 +101,10 @@ h1 {
   margin-top: 10px;
 }
 
+.checklist-panel {
+  margin-top: 10px;
+}
+
 .usage-steps {
   display: grid;
   gap: 4px;
@@ -108,7 +112,31 @@ h1 {
   padding-left: 1.4em;
 }
 
-.usage-note {
+.learning-checklist {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.learning-checklist label {
+  align-items: flex-start;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.learning-checklist input {
+  flex: 0 0 auto;
+  height: 18px;
+  margin-top: 0.18em;
+  width: 18px;
+}
+
+.usage-note,
+.checklist-note {
   color: var(--muted);
   font-size: 0.92rem;
   margin: 10px 0 0;
@@ -445,7 +473,18 @@ summary {
     margin-top: 10px;
   }
 
-  .usage-note {
+  .learning-checklist {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .learning-checklist input {
+    height: 20px;
+    width: 20px;
+  }
+
+  .usage-note,
+  .checklist-note {
     font-size: 0.84rem;
     line-height: 1.5;
   }
