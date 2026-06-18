@@ -1,5 +1,5 @@
 ﻿area_name,tsunami_special_area,expected_shindo,tsunami_arrival_note,power_restore_est,learning_memo,source_note,source_url
-釧路市,対象,震度6強,津波高+1m 約16分,3日〜1週間以上の停電に備える,沿岸部は津波避難を優先,内閣府 市町村別一覧 千島海溝モデル（水平地殻変動なし）・津波高+1m,https://www.bousai.go.jp/jishin/nihonkaiko_chishima/model/pdf/hokoku_shichoson.pdf
+釧路市,対象,最大震度7（一部地域）,津波高+1m 約16分,3日〜1週間以上の停電に備える,沿岸部は津波避難を優先。釧路市内でも地区により想定震度が異なります。釧路市地震防災マップでは、一部に震度7の想定区域があります。,釧路市地震防災マップ（令和6年3月発行）、内閣府資料等を参照。表記確認中。,https://www.bousai.go.jp/jishin/nihonkaiko_chishima/model/pdf/hokoku_shichoson.pdf
 釧路町,対象,震度6強,津波高+1m 約9分,3日〜1週間以上の停電に備える,沿岸部は津波避難を優先,内閣府 市町村別一覧 千島海溝モデル（水平地殻変動なし）・津波高+1m,https://www.bousai.go.jp/jishin/nihonkaiko_chishima/model/pdf/hokoku_shichoson.pdf
 厚岸町,対象,震度7,津波高+1m 約9分,3日〜1週間以上の停電に備える,津波と強い揺れの両方に注意,内閣府 市町村別一覧 千島海溝モデル（水平地殻変動なし）・津波高+1m,https://www.bousai.go.jp/jishin/nihonkaiko_chishima/model/pdf/hokoku_shichoson.pdf
 浜中町,対象,震度7,津波高+1m 約9分,3日〜1週間以上の停電に備える,沿岸部は高台避難を確認,内閣府 市町村別一覧 千島海溝モデル（水平地殻変動なし）・津波高+1m,https://www.bousai.go.jp/jishin/nihonkaiko_chishima/model/pdf/hokoku_shichoson.pdf
