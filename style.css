@@ -366,23 +366,26 @@ summary {
 }
 
 .popup-title {
-  font-weight: 800;
-  margin-bottom: 6px;
+  color: var(--text);
+  font-size: 0.98rem;
+  font-weight: 900;
+  line-height: 1.35;
+  margin-bottom: 7px;
 }
 
 .popup-table {
   border-collapse: collapse;
   font-size: 0.9rem;
-  line-height: 1.45;
+  line-height: 1.5;
   max-width: min(76vw, 420px);
   table-layout: fixed;
   width: 100%;
 }
 
 .popup-table th {
-  color: var(--muted);
-  font-weight: 700;
-  padding: 4px 8px 4px 0;
+  color: var(--text);
+  font-weight: 800;
+  padding: 5px 10px 5px 0;
   text-align: left;
   vertical-align: top;
   width: 7.5em;
@@ -390,7 +393,9 @@ summary {
 }
 
 .popup-table td {
-  padding: 4px 0;
+  color: #25313c;
+  font-weight: 600;
+  padding: 5px 0;
   overflow-wrap: anywhere;
   vertical-align: top;
 }
@@ -404,9 +409,9 @@ summary {
 
 .seismic-badge {
   align-items: center;
-  border: 1px solid rgba(23, 33, 43, 0.25);
+  border: 1px solid rgba(23, 33, 43, 0.2);
   border-radius: 6px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
   color: #111111;
   display: inline-flex;
   flex: 0 0 auto;
@@ -450,7 +455,7 @@ summary {
 
 .tsunami-arrival-badge {
   align-items: center;
-  border: 1px solid rgba(23, 33, 43, 0.18);
+  border: 1px solid rgba(23, 33, 43, 0.14);
   border-radius: 6px;
   display: inline-flex;
   flex: 0 0 auto;
@@ -734,12 +739,13 @@ summary {
 
   .popup-table {
     font-size: 0.86rem;
+    line-height: 1.45;
     max-width: 78vw;
   }
 
   .popup-table th {
-    padding-right: 6px;
-    width: 6.5em;
+    padding: 4px 7px 4px 0;
+    width: 6.2em;
   }
 
   .popup-table td {
@@ -803,14 +809,14 @@ summary {
 }
 
 .leaflet-popup-content .popup-table th {
-  padding: 4px 8px 4px 0;
+  padding: 5px 10px 5px 0;
   white-space: nowrap;
   width: 7em;
 }
 
 .leaflet-popup-content .popup-table td {
   overflow-wrap: anywhere;
-  padding: 4px 0;
+  padding: 5px 0;
   word-break: normal;
 }
 
@@ -825,6 +831,11 @@ summary {
   }
 
   .leaflet-popup-content .popup-table th {
-    width: 6.5em;
+    padding: 4px 7px 4px 0;
+    width: 6.2em;
+  }
+
+  .leaflet-popup-content .popup-table td {
+    padding: 4px 0;
   }
 }
