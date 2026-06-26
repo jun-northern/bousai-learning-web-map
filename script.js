@@ -5,7 +5,9 @@
     municipality: "data/municipality.geojson",
     tsunamiKushiro: "data/tsunami_kushiro.geojson",
     tsunamiNemuro: "data/tsunami_nemuro.geojson",
+    tsunamiTokachi: "data/tsunami_tokachi.geojson",
     evacuation: "data/evacuation_sites_tsunami.geojson",
+    evacuationTokachiTsunami: "data/evacuation_sites_tokachi_tsunami.geojson",
     municipalityScenario: "data/disaster_scenario_municipality.csv"
   };
 
@@ -61,6 +63,7 @@
 
   const tsunamiKushiroLayer = createInundationLayer();
   const tsunamiNemuroLayer = createInundationLayer();
+  const tsunamiTokachiLayer = createInundationLayer();
 
   const siteIcon = L.divIcon({
     className: "",
@@ -100,6 +103,8 @@
     "根室地域津波浸水域": tsunamiNemuroLayer
   };
 
+  overlays["\u5341\u52dd\u5730\u57df \u6d25\u6ce2\u6d78\u6c34\u57df"] = tsunamiTokachiLayer;
+
   L.control.layers({}, overlays, { collapsed: compactPortraitQuery.matches }).addTo(map);
   addLegend();
   loadInitialLayers();
@@ -116,6 +121,13 @@
       label: "根室地域津波浸水域",
       url: DATASETS.tsunamiNemuro,
       layer: tsunamiNemuroLayer,
+      loadPromise: null,
+      loaded: false
+    },
+    {
+      label: "\u5341\u52dd\u5730\u57df \u6d25\u6ce2\u6d78\u6c34\u57df",
+      url: DATASETS.tsunamiTokachi,
+      layer: tsunamiTokachiLayer,
       loadPromise: null,
       loaded: false
     }
@@ -205,8 +217,11 @@
   }
 
   async function loadEvacuationLayer() {
-    const geojson = await fetchGeoJson(DATASETS.evacuation);
-    evacuationSitesLayer.addData(geojson);
+    const geojsons = await Promise.all([
+      fetchGeoJson(DATASETS.evacuation),
+      fetchGeoJson(DATASETS.evacuationTokachiTsunami)
+    ]);
+    geojsons.forEach((geojson) => evacuationSitesLayer.addData(geojson));
     evacuationClusterLayer.addLayer(evacuationSitesLayer);
     evacuationClusterLayer.addTo(map);
   }
